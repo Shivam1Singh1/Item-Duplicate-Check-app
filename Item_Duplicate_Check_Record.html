@@ -1,0 +1,979 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Item Duplicate Check — Decision Record</title>
+<style>
+@page { size:A4; margin:13mm 12mm 12mm 12mm; }
+@page :first { margin:0; }
+
+:root{
+  --ink:#1f1a24; --ink-soft:#514a59; --ink-faint:#837b8c;
+  --rule:#e3dee8; --rule-soft:#efebf3; --paper:#fff; --tint:#f8f6fa;
+  --accent:#6b2d8e; --accent-2:#4a1d66; --accent-wash:#f3ecf8;
+  --orange:#c2570d; --orange-2:#9e4409; --orange-wash:#fdf1e5;
+  --bad:#99215c; --bad-wash:#fbecf3;
+}
+*{ box-sizing:border-box; }
+html{ -webkit-print-color-adjust:exact; print-color-adjust:exact; }
+body{
+  margin:0; font-family:Georgia,"Times New Roman",serif;
+  font-size:8.9pt; line-height:1.38; color:var(--ink); background:var(--paper);
+}
+.sans{ font-family:"Segoe UI",Helvetica,Arial,sans-serif; }
+
+/* ---------------- cover ---------------- */
+.cover{
+  page-break-after:always; break-after:page; height:297mm;
+  padding:26mm 20mm 16mm 20mm; color:#fff; display:flex; flex-direction:column;
+  background:linear-gradient(162deg,#6b2d8e 0%,#54216f 38%,#7a3418 82%,#9e4409 100%);
+}
+.cover .eyebrow{
+  font-family:"Segoe UI",Helvetica,Arial,sans-serif; font-size:7.8pt;
+  letter-spacing:.26em; text-transform:uppercase; color:#f3a85f; margin-bottom:9mm;
+}
+.cover h1{
+  font-family:"Segoe UI",Helvetica,Arial,sans-serif; font-size:31pt; line-height:1.08;
+  font-weight:600; margin:0 0 4mm 0; letter-spacing:-.015em;
+}
+.cover .sub{ font-size:12pt; line-height:1.45; color:#e4d4ee; max-width:120mm; margin:0 0 11mm 0; }
+.cover .tiles{ display:flex; gap:6mm; flex-wrap:wrap; margin-bottom:9mm; }
+.cover .tile b{
+  display:block; font-family:"Segoe UI",Helvetica,Arial,sans-serif;
+  font-size:19pt; font-weight:600; color:#ffb067; line-height:1.1;
+}
+.cover .tile span{
+  display:block; font-size:7.8pt; color:#d9c4e6; margin-top:1.2mm;
+  font-family:"Segoe UI",Helvetica,Arial,sans-serif;
+}
+.cover .pipe{ display:flex; gap:0; margin-bottom:auto; }
+.cover .pipe div{
+  flex:1; border:1px solid #9b6fb5; padding:2.2mm 1.6mm; text-align:center;
+  font-family:"Segoe UI",Helvetica,Arial,sans-serif; font-size:7.3pt; line-height:1.35;
+  color:#e9dcf2;
+}
+.cover .pipe div + div{ border-left:none; }
+.cover .pipe div b{ display:block; color:#ffb067; font-size:7pt; letter-spacing:.1em; margin-bottom:.8mm; }
+.cover .pipe div.key{ background:rgba(255,176,103,.16); border-color:#ffb067; }
+.cover .foot{
+  border-top:1px solid #a8632f; padding-top:4.5mm;
+  font-family:"Segoe UI",Helvetica,Arial,sans-serif; font-size:7.9pt;
+  color:#dcc6b0; line-height:1.6;
+}
+.cover .foot strong{ color:#ffc894; font-weight:600; }
+
+/* ---------------- headings ---------------- */
+h2{
+  font-family:"Segoe UI",Helvetica,Arial,sans-serif; font-size:12.5pt; font-weight:600;
+  color:var(--accent-2); margin:6mm 0 2.4mm 0; padding-bottom:1.4mm;
+  border-bottom:1.6px solid var(--orange); letter-spacing:-.01em;
+  break-after:avoid; page-break-after:avoid;
+}
+h2:first-of-type{ margin-top:0; }
+h2 .num{ display:inline-block; min-width:7.5mm; color:var(--orange); font-weight:700; }
+h3{
+  font-family:"Segoe UI",Helvetica,Arial,sans-serif; font-size:9.6pt; font-weight:600;
+  color:var(--accent); margin:3.6mm 0 1.4mm 0; break-after:avoid; page-break-after:avoid;
+}
+h4{
+  font-family:"Segoe UI",Helvetica,Arial,sans-serif; font-size:7.5pt; font-weight:700;
+  letter-spacing:.1em; text-transform:uppercase; color:var(--ink-faint);
+  margin:3mm 0 1mm 0; break-after:avoid; page-break-after:avoid;
+}
+p{ margin:0 0 1.8mm 0; }
+ul,ol{ margin:0 0 2mm 0; padding-left:4.8mm; }
+li{ margin-bottom:.8mm; }
+
+/* ---------------- tables ---------------- */
+table{ width:100%; border-collapse:collapse; margin:1.8mm 0 2.6mm 0; font-size:8pt; }
+thead{ display:table-header-group; }
+th{
+  font-family:"Segoe UI",Helvetica,Arial,sans-serif; font-size:7.2pt; font-weight:600;
+  text-transform:uppercase; letter-spacing:.05em; text-align:left;
+  color:var(--accent-2); background:var(--accent-wash);
+  padding:1.4mm 1.8mm; border-bottom:1.1px solid var(--orange);
+}
+td{ padding:1.25mm 1.8mm; border-bottom:1px solid var(--rule-soft); vertical-align:top; }
+tr{ break-inside:avoid; page-break-inside:avoid; }
+td.n, th.n{ text-align:right; font-variant-numeric:tabular-nums; white-space:nowrap; }
+.pos{ color:var(--accent); font-weight:700; }
+.neg{ color:var(--orange-2); font-weight:700; }
+tr.hl td{ background:var(--orange-wash); font-weight:700; }
+
+/* ---------------- blocks ---------------- */
+.card{
+  border:1px solid var(--rule); border-left:2.5px solid var(--accent);
+  background:var(--tint); padding:2.2mm 2.8mm 1.2mm; margin:2mm 0 2.6mm;
+  break-inside:avoid; page-break-inside:avoid;
+}
+.card.warn{ border-left-color:var(--orange); background:var(--orange-wash); }
+.card.bad { border-left-color:var(--bad); background:var(--bad-wash); }
+.card h4{ margin-top:0; }
+.card p:last-child{ margin-bottom:.6mm; }
+
+pre{
+  font-family:"Cascadia Mono",Consolas,"Courier New",monospace; font-size:7.2pt;
+  line-height:1.4; background:#faf8fb; border:1px solid var(--rule);
+  border-left:2.5px solid var(--orange); padding:1.8mm 2.2mm; margin:1.6mm 0 2.4mm;
+  white-space:pre-wrap; overflow-wrap:break-word;
+  break-inside:avoid; page-break-inside:avoid;
+}
+code{
+  font-family:"Cascadia Mono",Consolas,"Courier New",monospace; font-size:7.8pt;
+  background:var(--tint); padding:.2mm .7mm; border:1px solid var(--rule-soft); border-radius:1.5px;
+}
+pre code{ background:none; border:none; padding:0; font-size:inherit; }
+
+.tag{
+  display:inline-block; font-family:"Segoe UI",Helvetica,Arial,sans-serif;
+  font-size:6.8pt; font-weight:700; letter-spacing:.06em; text-transform:uppercase;
+  padding:.5mm 1.5mm; border-radius:2px;
+}
+.tag.keep,.tag.done{ background:var(--accent-wash); color:var(--accent); border:1px solid #d6bfe6; }
+.tag.drop{ background:var(--orange-wash); color:var(--orange-2); border:1px solid #efc9a4; }
+.tag.todo{ background:var(--tint); color:var(--ink-faint); border:1px solid var(--rule); }
+
+.cols2{ column-count:2; column-gap:7mm; }
+.cols2 > *{ break-inside:avoid; }
+.chapter{ page-break-before:always; break-before:page; }
+
+.gl{ font-size:8.3pt; }
+.gl b{ color:var(--accent); font-family:"Segoe UI",Helvetica,Arial,sans-serif; font-size:8pt; }
+.gl p{ margin:0 0 1.6mm 0; }
+
+.endnote{
+  margin-top:5mm; padding-top:2mm; border-top:1px solid var(--rule);
+  font-size:7.4pt; color:var(--ink-faint); font-family:"Segoe UI",Helvetica,Arial,sans-serif;
+}
+</style>
+</head>
+<body>
+
+<div class="cover">
+  <div class="eyebrow">MCPL &nbsp;·&nbsp; Frappe App &nbsp;·&nbsp; Decision Record</div>
+  <h1>Item Duplicate<br>Check</h1>
+  <p class="sub">A warning system that tells you an item already exists in the catalogue —
+  <em>before</em> you save a new one. It never stops you from saving.</p>
+
+  <div class="tiles">
+    <div class="tile"><b>25,590</b><span>Items in the catalogue</span></div>
+    <div class="tile"><b>91.0%</b><span>Of warnings are right</span></div>
+    <div class="tile"><b>7.5 ms</b><span>Time for one check</span></div>
+    <div class="tile"><b>7,781</b><span>Items already duplicated</span></div>
+  </div>
+
+  <div class="pipe">
+    <div><b>STEP 0</b>Same Cat No?<br>Answer at once</div>
+    <div><b>STEP 1</b>Find candidates<br>by rare words</div>
+    <div><b>STEP 2</b>Score each pair<br>out of 1.00</div>
+    <div class="key"><b>STEP 3</b>Safety rules<br>can cancel it</div>
+    <div><b>STEP 4</b>Warn the user<br>never block</div>
+  </div>
+
+  <div class="foot">
+    <strong>What this is.</strong> A plain-English record of every choice made in this app,
+    what else we could have done, and the measurement that decided it.<br>
+    <strong>Source.</strong> Condensed from <code style="color:#ffc894;background:none;border:none">README.md</code>
+    in the app repo. Data: Item.xlsx — 25,590 items, 56 columns, md5 f4d093698cc6cf5f52ad5b16a34fbbcb.
+    Earlier figures from site_local — 22,204 items.<br>
+    <strong>Printed.</strong> 19 October 2026 &nbsp;·&nbsp; app version 0.0.1
+  </div>
+</div>
+
+<h2><span class="num">—</span>How to read this, and the words we use</h2>
+
+<p>This is a decision log. Every section records four things in the same order:
+<strong>what we do</strong>, <strong>other choices</strong>, <strong>why not those</strong>,
+and the <strong>proof</strong> — the number that decided it. Every figure was measured on
+real catalogue data. Nothing is a guess.</p>
+
+<div class="card warn">
+<h4>The one rule for anyone changing this app</h4>
+<p>If you change a decision here, <strong>measure it first</strong>, then update this
+document and <code>README.md</code> together. The numbers are the reason, not somebody's
+opinion.</p>
+</div>
+
+<div class="gl cols2">
+<p><b>Precision</b> — out of all the warnings we show, how many were correct.
+<em>High precision means we rarely cry wolf.</em> This is the number that matters most.</p>
+<p><b>Recall</b> — out of all the real duplicates that exist, how many we actually found.
+<em>High recall means we miss very little.</em></p>
+<p><b>Separation</b> — how much more often a field agrees in real duplicates than in
+non-duplicates. A field that agrees 90% of the time in <em>both</em> cases tells you
+nothing; only the gap counts.</p>
+<p><b>Ablation</b> — take one piece away and see whether the system gets worse. If nothing
+changes, that piece was not earning its place.</p>
+<p><b>Veto gate</b> — our safety rules. After scoring they can <strong>cancel</strong> a
+match outright, no matter how alike the two names looked.</p>
+<p><b>Label leakage</b> — when a learning model is accidentally shown the answer. It scores
+beautifully in testing and fails completely in real use.</p>
+<p><b>Cat No</b> — the manufacturer's own catalogue number. Two items sharing one are
+almost always the same product.</p>
+<p><b>Rare-word index</b> — for every item we store its 4 rarest words, so a new name can
+be matched against only the items that share one.</p>
+</div>
+<h2><span class="num">0</span>The big one: search, or machine learning?</h2>
+
+<p><strong>What we do.</strong> A search system first; a model added later as one small part
+of it. Find candidates → score them → safety rules decide → and only then does a model
+improve the scoring.</p>
+
+<p><strong>Why not a model first.</strong> A model takes <em>two</em> items and compares
+them. It cannot go and <em>find</em> the second item. With 22,204 items there are about
+<strong>246 million</strong> possible pairs — you cannot run a model on all of them.
+Something must shortlist first, and that something <em>is</em> the search. A model also
+needs examples, and at the start we had none.</p>
+
+<p><strong>Why not an AI for everything.</strong> Too slow (1–3 seconds), costs money per
+check, and needs internet from the server. Kept as an optional helper for hard cases only.</p>
+
+<p><strong>Proof</strong> — group-wise split, 18 clues, 8,614 held-out test pairs:</p>
+<pre>Hand-written rules    precision 75.7%    recall 49.2%
+Trained model         precision 76.3%    recall 50.4%
+                      the model added +1.2 points</pre>
+
+<div class="card">
+<p>Almost all the value sits in the <strong>search and the safety rules</strong>. That is
+why the model comes last. One nice detail: the model independently rediscovered our
+hand-written length penalty (section 5) straight from the data.</p>
+</div>
+
+<h2><span class="num">1</span>A separate app, not code inside another app</h2>
+
+<p><strong>What we do.</strong> A standalone Frappe app, <code>item_duplicate_check</code>.</p>
+<ul>
+<li><strong>Not inside another app</strong> — you could not switch it off on its own. If it
+misbehaves during live item creation you need to disable <em>one</em> thing, fast.</li>
+<li><strong>Not a Server Script</strong> — several code files, cached data, background jobs,
+unit tests and later a model file do not fit in a script box, and cannot be tested.</li>
+<li><strong>Not an edit to ERPNext's Item</strong> — breaks on the next upgrade. This app
+only adds hooks and new doctypes; core Item is untouched.</li>
+</ul>
+<p><strong>Proof.</strong> Three custom fields (<code>custom_item_creation_reference</code>,
+<code>custom_item_creation_type</code>, <code>custom_category</code>) still sit on Item
+holding data, but the app that created them was removed and their link targets are gone.
+That is exactly the mess a clean, removable app avoids.</p>
+
+<h2><span class="num">2</span>Cleaning up the text</h2>
+
+<p><strong>What we do.</strong> Before comparing two names we clean both the same way.
+Ten rules, and <strong>the order is locked</strong> — several only work if an earlier one
+has already run. Rule 2 before rule 3, rule 1 before rule 5, rule 7 before rule 9.</p>
+
+<table>
+<thead><tr><th class="n" style="width:6mm">#</th><th style="width:58mm">Rule</th><th>Found in the data (25,590 items)</th></tr></thead>
+<tbody>
+<tr><td class="n">1</td><td>Repair broken characters <code>Âµ</code> → <code>µ</code></td><td>8 rows, e.g. <code>Millex,33mm,0.22Âµm</code></td></tr>
+<tr class="hl"><td class="n">2</td><td>Remove ™ ® ©</td><td>3,249 items (12.7%)</td></tr>
+<tr><td class="n">3</td><td>Unicode NFKC tidy-up</td><td>—</td></tr>
+<tr><td class="n">4</td><td>Invisible space → normal space</td><td>237 items (0.9%)</td></tr>
+<tr><td class="n">5</td><td>µ and μ both become <code>u</code></td><td>540 items (2.1%)</td></tr>
+<tr><td class="n">6</td><td>Lower case</td><td>solves DNase / DNAse</td></tr>
+<tr><td class="n">7</td><td>Join number to unit: <code>50 ml</code> → <code>50ml</code></td><td>—</td></tr>
+<tr><td class="n">8</td><td>Join number to percent: <code>70 %</code> → <code>70%</code></td><td>—</td></tr>
+<tr><td class="n">9</td><td>Strip punctuation, keep <code>.</code> and <code>%</code></td><td>decimals and grades must survive</td></tr>
+<tr><td class="n">10</td><td>Drop trailing dot, squash spaces</td><td>1,369 (5.3%) dots, 428 (1.7%) double spaces</td></tr>
+</tbody>
+</table>
+
+<p><strong>Why not compare names as typed?</strong> 12% carry a ™ on their own and would
+never match. <strong>Why keep digits?</strong> Removing them destroys the sizes the safety
+rules need. <strong>Why no spell-checker?</strong> Scientific names are not dictionary
+words; it would corrupt them.</p>
+
+<p><strong>Why we rejected sound-alike matching (Soundex, Metaphone).</strong> They code a
+word by how it <em>sounds</em>, and were designed for English surnames. Over
+<code>PmeI</code>, <code>Axygen</code>, <code>2-Mercaptoethanol</code> they produce
+near-random matches. The one case they would have helped —
+<code>DNase</code> vs <code>DNAse</code> — is already solved by lower-casing. They would add
+wrong answers and find nothing new.</p>
+
+<h2><span class="num">3</span>The safety rules — the veto gate</h2>
+
+<p><strong>This is the most important part of the app.</strong> More accuracy comes from
+this one file than from everything else combined. After scoring we ask whether the two items
+are actually <em>different products wearing similar names</em>. If so the match is
+<strong>cancelled</strong> — score forced to zero — no matter how alike the text was.</p>
+
+<table>
+<thead><tr><th class="n" style="width:6mm">#</th><th style="width:26mm">Check</th><th>The rule</th></tr></thead>
+<tbody>
+<tr><td class="n">1</td><td><strong>Size</strong></td><td>Convert to a base unit and compare, so <code>1kg</code> = <code>1000g</code>. Disagreement on a shared measurement → cancel.</td></tr>
+<tr><td class="n">2</td><td><strong>Number codes</strong></td><td>Any word containing a number. Both sides have one and they differ → cancel.</td></tr>
+<tr><td class="n">3</td><td><strong>Negation</strong></td><td><code>no</code>, <code>without</code>, <code>non</code>, <code>free</code>, <code>reduced</code>, <code>anti</code> → cancel if they differ.</td></tr>
+<tr><td class="n">4</td><td><strong>Grade</strong></td><td><code>absolute</code>, <code>HPLC</code>, <code>sterile</code>, <code>RNase free</code>, <code>70%</code> → cancel if they differ.</td></tr>
+</tbody>
+</table>
+
+<p>Every pair below scored high on text similarity. Every pair is a
+<strong>different product</strong>:</p>
+<pre>Glass bent inlet adaptor B-34    vs  B-24              different size
+Sartocon Slice Cassette 100kDa   vs  50kDa             different filter
+Vivaspin 20 MWCO 5 kDa           vs  3 kDa             different cut-off
+Festo Push-in T-connector QST-6  vs  QST-8             different part
+Dengue virus strain 2            vs  strain 1          different strain
+TrypLE Express no phenol red     vs  Phenol Red        opposite product
+Nuclease-free Water B1500S       vs  B1500L            small vs large pack
+Glycine 500g                     vs  1kg               different size</pre>
+
+<div class="card">
+<h4>The pattern behind the whole design</h4>
+<p>The detail that tells two products apart is <strong>almost always a word containing a
+number, or a negation word</strong>. That single observation is the entire design of this
+module.</p>
+</div>
+
+<h4>Proof</h4>
+<table>
+<thead><tr><th>Version of the gate</th><th class="n">Precision</th><th class="n">Recall</th></tr></thead>
+<tbody>
+<tr><td>No gate</td><td class="n">78.1%</td><td class="n">88.5%</td></tr>
+<tr><td>Size and grade only</td><td class="n">81.4%</td><td class="n">89.7%</td></tr>
+<tr class="hl"><td>All four checks</td><td class="n">91.0%</td><td class="n">79.5%</td></tr>
+</tbody>
+</table>
+
+<p>The full gate trades 10 points of recall for 10 of precision. We take that trade: a wrong
+warning costs user trust permanently, a missed duplicate costs one extra row.</p>
+
+<p><strong>Why not let the model learn it?</strong> We tested that. The model gave a size
+conflict a weight of only <strong>&minus;0.23</strong> — it treats an absolute rule as a mild
+preference. A hard rule is far better.</p>
+
+<div class="card warn">
+<h4>The rule for maintaining this file</h4>
+<p>Every false warning seen in production becomes a test case in
+<code>tests/test_specs.py</code> <strong>first</strong>, then the rule is fixed. Never patch
+a rule without leaving a test behind. That file is the living rulebook.</p>
+</div>
+
+<h2><span class="num">4</span>How we find items worth comparing</h2>
+
+<p><strong>What we do.</strong> A rare-word index. For every item we store its 4 rarest
+words; to find candidates for a new name we look up its rare words and collect the items
+that share them. <code>Nunc</code>, <code>Axygen</code> and <code>PmeI</code> point straight
+at the right items; <code>plate</code>, <code>tips</code> and <code>sterile</code> are
+ignored for lookup.</p>
+
+<table>
+<thead><tr><th>Method</th><th class="n">Found in top 5</th><th class="n">Speed</th></tr></thead>
+<tbody>
+<tr><td>Item Child Group filter</td><td class="n neg">24.7%</td><td class="n">48.5 ms</td></tr>
+<tr class="hl"><td>Rare-word index &nbsp;— chosen</td><td class="n">89.7%</td><td class="n">4.7 ms</td></tr>
+<tr><td>Scan the whole catalogue</td><td class="n">89.8%</td><td class="n">24.9 ms</td></tr>
+</tbody>
+</table>
+
+<div class="card bad">
+<h4>The number that changed the plan</h4>
+<p>Narrowing by Item Child Group was our original design, and it failed badly:
+<strong>80.5% of real duplicate pairs sit in different child groups</strong>, because the
+teams that created the duplicates also filed them under different categories. The model
+could have been perfect and the system would still have missed 3 out of 4 duplicates —
+the right item never reached it.</p>
+</div>
+
+<p>A vector database is unnecessary at this size; exact comparison is cheaper than the
+infrastructure. <strong>Fallback:</strong> a name with fewer than 2 usable words falls back
+to the full scan, and 24.9 ms is still well inside budget.</p>
+
+<h2><span class="num">5</span>How we score a pair</h2>
+
+<pre>score = safety gate x (  0.47  how alike the words are, in order
+                       + 0.21  how alike the word sets are, x length penalty
+                       + 0.18  how many rare words they share
+                       + 0.14  do the fields agree (manufacturer) )
+
+The safety gate is 0 or 1.  A 0 cancels everything.
+An exact Cat No match jumps straight to 0.97 and skips the weights.</pre>
+
+<p><strong>Why hand-written and not a model.</strong> It can be <em>explained</em> — the
+panel says "names 96% alike, same manufacturer, both 50 ml" instead of "0.94", and people
+trust a tool that explains itself. It can be tuned without retraining, since every weight is
+a setting. And it works on day one with no training data.</p>
+
+<p><strong>The length penalty — do not remove it.</strong> The standard word-set score gives
+a perfect 100 whenever one name's words are all contained in the other's:</p>
+<pre>100   "DNase I, RNase-free (1 U/uL)"   vs   "DNAse"
+100   "PmeI, recombinant"              vs   "PmeI"
+100   "Plasmid DNA - qwp"              vs   "Plasmid DNA"</pre>
+<p>Multiplying by <code>shortest / longest</code> fixes it. When we trained the model it
+learned this same correction by itself — independent confirmation the rule is right.</p>
+
+<p><strong>Why rare-word overlap gets 0.18.</strong> Two items sharing <code>nunc</code> is
+strong evidence; two items sharing <code>plate</code> is almost none. Plain string
+similarity cannot tell the difference, so we weight each shared word by how rare it is.</p>
+
+<h2><span class="num">6</span>Cat No is a lookup, not a clue</h2>
+
+<p><strong>What we do.</strong> Cat No is used in Step 0 as a direct lookup — same Cat No,
+return that answer at once with high confidence. It is <strong>never</strong> handed to the
+scorer or the model as a clue.</p>
+
+<p><strong>Why this matters.</strong> Our only source of training examples is "these two
+share a Cat No, so they are the same product". If the model <em>also</em> sees Cat No as a
+clue it learns one useless rule — <em>same Cat No means same item</em> — and learns nothing
+about names. It would test beautifully and fail on the <strong>31% of items with no Cat
+No</strong>. That mistake is <strong>label leakage</strong>. Keeping the two jobs apart also
+makes our accuracy figures honest: we measure the scorer <em>against</em> Cat No, which is
+fair precisely because the scorer never sees it.</p>
+
+<p><strong>Proof it works as a key.</strong> 10,500 Cat No values in use;
+<strong>3,319 are already shared by more than one item, covering 7,781 items (35% of the
+catalogue)</strong>; 8 groups checked by hand at random were all genuine duplicates.</p>
+
+<div class="card warn">
+<h4>Two cautions</h4>
+<p><strong>A Cat No match is evidence, not proof</strong> — the safety rules still apply on
+top. Real example: <code>cat=SUFR38200</code> covers both "Tyvek roll Flat reels-38 cm" and
+"…40cm x 200 mtr".</p>
+<p><strong>Clean the junk first.</strong> 320 items use placeholders (<code>0</code> ×172,
+<code>na</code> ×144). The 172 items sharing <code>"0"</code> alone produce 14,706 phantom
+pairs. Removing junk takes 24,569 raw pairs down to <strong>5,473 real ones</strong>. That
+is the difference between good training data and poisoned training data.</p>
+</div>
+<h2><span class="num">7</span>Which Item fields we use</h2>
+
+<p>We tested <strong>all 94 fields</strong> on the Item doctype one way: build pairs we
+<em>know</em> are duplicates and pairs we <em>know</em> are not, then measure
+<strong>separation</strong> — agreement in duplicates minus agreement in non-duplicates.</p>
+
+<table>
+<thead><tr><th>Field</th><th class="n">In duplicates</th><th class="n">In non-dups</th><th class="n">Separation</th><th>Decision</th></tr></thead>
+<tbody>
+<tr><td><code>custom_reference_old_item_code</code></td><td class="n">81.3%</td><td class="n">1.1%</td><td class="n pos">+80.2</td><td>Second lookup key — only 4% coverage</td></tr>
+<tr class="hl"><td><code>makes</code></td><td class="n">80.0%</td><td class="n">20.0%</td><td class="n">+60.0</td><td>Use — after the alias table is built</td></tr>
+<tr><td><code>gst_hsn_code</code></td><td class="n">58.6%</td><td class="n">25.5%</td><td class="n pos">+33.1</td><td>Use, small weight</td></tr>
+<tr><td><code>department</code></td><td class="n">73.5%</td><td class="n">45.2%</td><td class="n pos">+28.2</td><td>Use, small weight</td></tr>
+<tr><td><code>custom_item_creation_requester_</code></td><td class="n">56.9%</td><td class="n">29.5%</td><td class="n pos">+27.4</td><td>Use, small weight</td></tr>
+<tr><td><code>naming_series</code></td><td class="n">72.5%</td><td class="n">83.6%</td><td class="n neg">&minus;11.1</td><td>Backwards — a <em>different</em> series means more likely duplicate</td></tr>
+<tr><td><code>stock_uom</code></td><td class="n">52.6%</td><td class="n">76.0%</td><td class="n neg">&minus;23.4</td><td><strong>Do not use</strong></td></tr>
+</tbody>
+</table>
+
+<h4>Fields we deliberately refuse</h4>
+<table>
+<thead><tr><th style="width:30mm">Field</th><th>Why</th></tr></thead>
+<tbody>
+<tr><td><code>stock_uom</code></td><td><strong>Separation &minus;23.4.</strong> It points the wrong way. In confirmed duplicates — same Cat No, same manufacturer, same product — the unit disagrees <strong>52.4%</strong> of the time. <code>Human AB Serum</code> is filed as Millilitre, Millilitre <em>and</em> Nos. Including it was the most tempting mistake available, and only measurement caught it.</td></tr>
+<tr><td><code>description</code></td><td>80.9% are a 95%-or-better copy of <code>item_name</code>; only 9.6% add anything.</td></tr>
+<tr><td><code>brand</code></td><td>Filled on 145 of 22,204 items — 0.7%. Abandoned; <code>makes</code> replaced it.</td></tr>
+<tr><td><code>item_group</code></td><td>Too coarse — the largest group holds 7,915 items, 36% of the catalogue.</td></tr>
+<tr><td><code>custom_category</code></td><td>71% filled, but the doctype it links to no longer exists.</td></tr>
+<tr><td>Item Supplier</td><td>Only 2 rows exist in the whole system.</td></tr>
+</tbody>
+</table>
+
+<p><strong><code>makes</code> needs cleaning before it earns its weight.</strong> There are
+1,785 spellings of manufacturer names. "Thermo" alone has <strong>111 spellings</strong>
+across 1,916 items — Thermo (424), Thermo Scientific (331), Thermo Fisher Scientific (192),
+Thermofisher (104), Gibco/Thermo (76) and 106 more. Sigma has 47, Merck 40, BD 37, Gibco 22.
+Until an alias table maps these to one name each, the field is noise rather than signal.</p>
+
+<h2><span class="num">8</span>The machine learning model, and its training data</h2>
+
+<p><strong>What we do.</strong> A pair classifier — give it two items, it returns the chance
+they are the same. It replaces only the scoring function from section 5, and only if it
+beats the hand-written weights on data it has never seen. Main model:
+<strong>Logistic Regression</strong> (right size for ~20 clues and a few thousand examples,
+trains in under a second, and <em>the weights are readable</em>). Challenger: Gradient
+Boosting, trained purely for comparison.</p>
+
+<table>
+<thead><tr><th style="width:44mm">Rejected</th><th>Why</th></tr></thead>
+<tbody>
+<tr><td>Neural network</td><td>Far too little data; no benefit at this size</td></tr>
+<tr><td>Random Forest / SVM</td><td>No real gain here, and harder to explain</td></tr>
+<tr class="hl"><td>Embeddings as the main judge</td><td>They rate <code>Glycine 500g</code> and <code>Glycine 1kg</code> as about 97% the same — actively dangerous on this catalogue. Kept as a possible extra later, <em>behind</em> the safety rules, small weight.</td></tr>
+<tr><td>Fine-tuning our own embedding model</td><td>3–5 weeks, needs a GPU and thousands of clean labels. Revisit in a year.</td></tr>
+</tbody>
+</table>
+
+<p><strong>Honest expectation: +1.2 points over good rules.</strong> Not 15. Today's examples
+come from Cat No agreement, and those are <em>easy</em> pairs — mostly near-identical names,
+with little for a model to learn. The real gain comes later from the production log, where
+the examples are hard cases a human had to think about. Expect +6 to +8 points there.</p>
+
+<table>
+<thead><tr><th>Source of examples</th><th>Gives us</th><th>When</th></tr></thead>
+<tbody>
+<tr><td>Items sharing a Cat No, junk removed</td><td>5,473 duplicate pairs — 8 of 8 checked by hand were real</td><td>Now</td></tr>
+<tr><td>Hard non-duplicates from our own search</td><td>592,497 available, ~21,900 needed</td><td>Now</td></tr>
+<tr class="hl"><td>The production log</td><td>What users actually did — the best source</td><td>After 2–3 months</td></tr>
+<tr><td>Expert test set</td><td>300–500 hand-checked pairs</td><td><strong>Never trained on</strong></td></tr>
+</tbody>
+</table>
+
+<p><strong>Why non-duplicates must come from our own search.</strong> If the model trains on
+easy pairs but the live system shows it hard ones, it fails in real use. Training and live
+scoring must see the same kind of pair.</p>
+
+<div class="card warn">
+<h4>The rule</h4>
+<p>Ship the hand-written weights unless the model clearly wins on the expert test set. Ties
+go to the simpler option. Keep the hand-written scorer in the code permanently, as an
+automatic fallback if the model file is missing or fails to load.</p>
+</div>
+
+<h2><span class="num">9</span>What the user sees, and never blocking a save</h2>
+
+<table>
+<thead><tr><th style="width:24mm">Score</th><th>Message</th><th style="width:38mm">What they can do</th></tr></thead>
+<tbody>
+<tr class="hl"><td>0.92 and above</td><td>"This item looks like it already exists", with the match and a link</td><td>Open it, or save anyway</td></tr>
+<tr><td>0.75 to 0.92</td><td>A quiet note: "Some similar items exist"</td><td>Look, or ignore</td></tr>
+<tr><td>Below 0.75</td><td>Nothing shown. Still written to the log.</td><td>Nothing</td></tr>
+</tbody>
+</table>
+
+<p><strong>These thresholds are a starting guess, not a result.</strong> They get set properly
+during the two-week silent run on real traffic. At 0.92 the current alert rate is 33%, which
+is high — expect to raise it.</p>
+
+<p><strong>Always explain why.</strong> Show the reason, not the number: <em>"names 97% alike
+· same manufacturer · both 50 mL"</em>. It comes free from the component scores and does more
+for adoption than any accuracy improvement.</p>
+
+<div class="card bad">
+<h4>Never block a save</h4>
+<p>The check warns; it never throws. 79 items in your system are all named <em>"electrical
+installation at mrna lab"</em> — they are not mistakes, they are CAPEX service entries, one
+per purchase order, and they are correct. Blocking duplicate saves would break a working
+business process on day one.</p>
+<p>Non-stock items are skipped entirely, which removes that whole class of false warning with
+one line before any scoring happens. The whole check is wrapped in error handling that logs
+and returns nothing: <strong>a duplicate checker must never be the reason somebody cannot
+create an item.</strong></p>
+</div>
+
+<h2><span class="num">10</span>Logging every check</h2>
+
+<p><strong>What we do.</strong> Every check writes one row to <strong>Item Match Log</strong>
+— including the silent ones nobody sees: what the user typed, the top 5 matches with scores
+and cancel reasons, which band it fell into, <strong>what the user did next</strong>
+(used the existing item / created anyway / gave up), <strong>why they created anyway</strong>
+(different size / different grade / genuinely new / service line), how long it took, and
+which version of the engine ran.</p>
+
+<p>The two highlighted items are <strong>real human judgements on real pairs, captured for
+free</strong>. Three months of them is better training data than any amount of
+hand-labelling, and it is the only source of labels free from the Cat No leakage problem in
+section 6. <strong>Build it on day one, even though nothing reads it yet.</strong></p>
+
+<p><em>One thing to design around:</em> users only judge the pairs we chose to show them, so
+we log the full top 5 including the hidden ones and occasionally review a random sample of
+those hidden pairs.</p>
+
+<h2><span class="num">11</span>How we measure success</h2>
+
+<table>
+<thead><tr><th style="width:40mm">Measure</th><th>In plain words</th><th class="n">Target</th></tr></thead>
+<tbody>
+<tr class="hl"><td>Precision of strong warnings</td><td>Of all "this already exists" messages, how many were right</td><td class="n">90%+</td></tr>
+<tr><td>Recall at top 5</td><td>Of the real duplicates, how many appear in the list</td><td class="n">70% → 85%</td></tr>
+<tr><td>Look-alikes rejected</td><td>Different sizes and grades correctly left alone</td><td class="n">95%+ <em>(not yet measured)</em></td></tr>
+<tr><td>Speed</td><td>What the user waits for</td><td class="n">under 300 ms</td></tr>
+<tr><td>Ignore rate</td><td>Strong warnings clicked straight past</td><td class="n">under 25%</td></tr>
+<tr><td>Duplicates prevented</td><td>Times an existing item was used instead</td><td class="n">track monthly</td></tr>
+</tbody>
+</table>
+
+<p><strong>Why precision is the headline, not recall.</strong> A missed duplicate costs one
+extra row in the catalogue. A <em>wrong</em> warning teaches the user the tool is unreliable;
+after three of those they click past every warning forever, including the correct ones.
+Recall can improve for a year — trust does not come back.</p>
+
+<p><strong>The method.</strong> Build the test harness <em>before</em> tuning anything, or
+you are guessing. Replay history in date order for a free accuracy estimate at full scale.
+Run silently for two weeks before any user sees a warning. And never test on the training
+data — no exceptions.</p>
+
+<h2><span class="num">12</span>The data, and how we split it</h2>
+
+<p>We work from an Excel export, not a database backup — no fresh backup was available.
+<code>Item.xlsx</code> holds 25,590 items and 56 columns and is never modified; a working
+copy is taken before any processing.</p>
+
+<div class="card bad">
+<h4>What this costs us</h4>
+<p>The export has <strong>no creation date column</strong>, so the single most important
+question — <em>are items still being created?</em> — cannot be answered from this file.
+<strong>Action needed: re-export with the Created On column.</strong> It is one column, and
+it decides whether half this plan is worth building.</p>
+</div>
+
+<p><strong>The split: 70 / 15 / 15, by product group, not by row.</strong></p>
+
+<table>
+<thead><tr><th>Split</th><th class="n">Items</th><th class="n">Groups</th><th class="n">Duplicate pairs</th><th>Used for</th></tr></thead>
+<tbody>
+<tr><td>Train</td><td class="n">17,914</td><td class="n">13,191</td><td class="n">4,276</td><td>Fit the model</td></tr>
+<tr><td>Validation</td><td class="n">3,838</td><td class="n">2,828</td><td class="n">978</td><td>Tune thresholds, choose the model type</td></tr>
+<tr class="hl"><td>Test</td><td class="n">3,838</td><td class="n">2,829</td><td class="n">888</td><td>Touch <strong>once</strong>, at the very end</td></tr>
+</tbody>
+</table>
+
+<p>A product group is a connected set of rows linked by Cat No (4,977 merges), identical Item
+Name (4,256) or Old Item Code (197) — giving <strong>18,848 product groups</strong> from
+25,590 items, of which 4,408 hold more than one item.</p>
+
+<p><strong>Why not shuffle rows and split?</strong> Leakage. The same product lands in both
+train and test; the model sees <code>Glycine 500g</code> in training and
+<code>Glycine 500g.</code> in testing, scores brilliantly, and fails in production.</p>
+
+<pre>product groups spanning more than one split : 0   OK
+identical names split across sides          : 0   OK      (random_state = 42)</pre>
+
+<p>Settings that go with it: <strong>4 non-duplicates per duplicate</strong>, drawn from
+name-similar candidates rather than random pairs (random pairs are too easy and teach
+nothing); remove Cat No junk first, or 14,814 fake pairs enter the split; and Cat No stays
+out of the clues, because it made the labels.</p>
+<h2><span class="num">13</span>How an Item Code is built</h2>
+
+<p>Worked out from the data, not from documentation.</p>
+
+<pre>RDCN  02  03  0516        PREFIX + CC(2) + SS(2) + NNNN(4)
+ |     |   |    +---- serial number -- MEANINGLESS, discard it
+ |     |   +--------- sub-category
+ |     +------------- category
+ +------------------- division / type prefix</pre>
+
+<p>Digits 1–4 predict Item Group <strong>99.9%</strong> of the time and Item Child Group
+<strong>99.3%</strong>. Digits 7–8 predict the child group only 37.4% — that is the serial,
+and it means nothing. Confirmed from the other direction too: inside every category the
+serial runs 0001, 0002, 0003 with no gaps, in 100% of the 154 groups tested.</p>
+
+<p><strong>But only 47% of items use this scheme.</strong></p>
+
+<table>
+<thead><tr><th>Shape</th><th class="n">Items</th><th class="n">Share</th><th>Example</th><th>Category?</th></tr></thead>
+<tbody>
+<tr><td><code>AAAA99999999</code></td><td class="n">13,906</td><td class="n">54.3%</td><td><code>RDCN02030516</code></td><td><span class="tag keep">Yes</span></td></tr>
+<tr><td><code>A&amp;A99999</code></td><td class="n">8,334</td><td class="n">32.6%</td><td><code>R&amp;D08518</code></td><td><span class="tag drop">No</span></td></tr>
+<tr><td><code>AAAAA-9999</code></td><td class="n">2,841</td><td class="n">11.1%</td><td><code>CAPEX-02961</code></td><td><span class="tag drop">No</span></td></tr>
+<tr><td><code>AA/999999</code></td><td class="n">500</td><td class="n">2.0%</td><td><code>RM/000707</code></td><td><span class="tag drop">No</span></td></tr>
+</tbody>
+</table>
+
+<div class="card bad">
+<h4>The root cause, visible in the codes themselves</h4>
+<p><code>RDCN…</code> is the <strong>R&amp;D</strong> division; <code>CN…</code> is
+<strong>Manufacturing</strong>. Same categories, separate numbering. The same product bought
+by two divisions gets two unrelated codes <em>by design</em> — and
+<code>R&amp;D08518</code> encodes no category at all, so another 32.6% carry no structure.</p>
+<p>This is why 92% of duplicate groups span more than one code prefix. <strong>The duplicate
+problem is built into the numbering system.</strong> It is not caused by careless users.</p>
+</div>
+
+<p><strong>Three rules follow.</strong> (1) <em>Never text-match an Item Code</em> —
+<code>RDCN02030516</code> and <code>RDCN02030517</code> are 92% similar as strings and are
+unrelated products; treating codes as text would be a disaster. (2) <em>Parse it instead</em>
+— prefix, category, sub-category, serial — and throw the serial away. (3) <em>The code's
+category beats the field</em>, because 9.6% of code-groups have an Item Child Group that
+disagrees with their own code; the code is set at creation, the field gets edited later.</p>
+
+<p><strong>And a useful signal falls out:</strong> same category but a <em>different division
+prefix</em> is <strong>evidence of duplication</strong>, not evidence against it.</p>
+
+<h2><span class="num">14</span>Which columns we keep, and which attributes matter</h2>
+
+<p>Cut from <strong>57 columns to 11</strong>, then narrowed again by ablation.</p>
+
+<table>
+<thead><tr><th style="width:34mm">Column</th><th class="n">Filled</th><th>Role</th></tr></thead>
+<tbody>
+<tr class="hl"><td>Item Name</td><td class="n">100%</td><td>MAIN ATTRIBUTE — 86% of the matching score</td></tr>
+<tr><td>Cat No</td><td class="n">70.6%</td><td>MAIN KEY — exact lookup, never a model clue</td></tr>
+<tr><td>Makes</td><td class="n">72.6%</td><td>Scoring — needs the alias table first</td></tr>
+<tr><td>Item Code</td><td class="n">100%</td><td>Identity. Parsed, never text-matched.</td></tr>
+<tr><td>Description</td><td class="n">100%</td><td>Shown to the user, never scored</td></tr>
+<tr><td>Maintain Stock</td><td class="n">100%</td><td><strong>The gate.</strong> Without it the 79 CAPEX rows return as false duplicates.</td></tr>
+<tr><td>Disabled</td><td class="n">100%</td><td>Ranks disabled items lower</td></tr>
+<tr><td>Reference Old Item Code</td><td class="n">6.0%</td><td>Second lookup key, not a model clue</td></tr>
+<tr><td>HSN/SAC · Department · <code>dataset_split</code></td><td class="n">—</td><td>Kept in the data files, out of the scorer</td></tr>
+</tbody>
+</table>
+
+<p><strong>Notable drops among the 46:</strong> Default Unit of Measure (separation
+&minus;5.0, and the unit disagrees 52.4% of the time in confirmed duplicates); Item Child
+Group (&minus;1.9, agrees in only 18.9% of real duplicates); Item Group / Category
+(&minus;10.0 / &minus;11.1); Weight Per Unit (100% filled but every value is 0); Weight UOM
+(0.2% filled); Brand (0.7%).</p>
+
+<h3>Why we re-ranked by ablation instead of separation</h3>
+
+<p>Separation answers <em>"when this field is filled in, how useful is it?"</em> — but not
+<em>"how many real decisions does it change?"</em>, because it ignores how often the field is
+there at all. So we removed one attribute at a time and measured the move, on the validation
+split only.</p>
+
+<table>
+<thead><tr><th>Attribute removed</th><th>at 0.60</th><th>at 0.85</th><th>at 0.92</th><th>Verdict</th></tr></thead>
+<tbody>
+<tr class="hl"><td>Makes</td><td>recall &minus;1.3</td><td>recall &minus;5.0</td><td>recall &minus;11.7</td><td><span class="tag keep">Major</span></td></tr>
+<tr><td>HSN/SAC</td><td>recall +1.2</td><td>prec +1.1</td><td>recall +1.4</td><td><span class="tag drop">Drop</span></td></tr>
+<tr><td>Department</td><td>recall +1.2</td><td>recall +1.7</td><td>recall +2.5</td><td><span class="tag drop">Drop</span></td></tr>
+<tr><td>Reference Old Item Code</td><td><strong>0.0</strong></td><td><strong>0.0</strong></td><td>&minus;0.2</td><td><span class="tag drop">Drop</span></td></tr>
+<tr><td>Description · Disabled</td><td>+0.2</td><td>—</td><td>—</td><td><span class="tag todo">Display only</span></td></tr>
+</tbody>
+</table>
+
+<p>A <strong>positive</strong> number means the system got <em>better</em> when the attribute
+was removed. <code>HSN/SAC</code> and <code>Department</code> sat in the same agreement term
+as <code>Makes</code> and <strong>diluted the strong signal</strong>:</p>
+
+<pre>agreement from Makes + HSN + Department   P 93.7%   R 47.0%
+agreement from Makes alone                P 94.9%   R 49.4%   better on BOTH axes</pre>
+
+<div class="card">
+<h4>The correction on Reference Old Item Code, and the lesson</h4>
+<p>We previously kept it because its separation was the highest of any field,
+<strong>+79.3</strong>. The ablation shows it changes <strong>zero decisions</strong>: it is
+filled on only 6.0% of items, both sides of a pair have it in about 4% of cases, and in those
+few cases the name score had already decided the answer.</p>
+<p><strong>Separation ranks a field's quality. Ablation ranks its usefulness. For a
+keep-or-drop decision, ablation is the one that counts.</strong></p>
+</div>
+
+<h3>Description — major for display, never scored</h3>
+
+<p>When the panel says "this item may already exist", a name alone is often not enough — the
+user needs to see what the existing item actually <em>is</em>. That makes Description
+actionable, and it goes into the Item Match Log so later review has full context. But five
+scoring designs were tested and none beat ignoring it:</p>
+
+<table>
+<thead><tr><th>Design</th><th class="n">P @0.60</th><th class="n">R @0.60</th><th class="n">P @0.85</th><th class="n">R @0.85</th></tr></thead>
+<tbody>
+<tr class="hl"><td>Ignore it completely</td><td class="n">87.8%</td><td class="n">63.8%</td><td class="n">91.7%</td><td class="n">51.9%</td></tr>
+<tr><td>Flat 5% weight</td><td class="n">87.6%</td><td class="n">63.8%</td><td class="n">92.1%</td><td class="n">51.5%</td></tr>
+<tr><td>15% weight, always</td><td class="n">87.8%</td><td class="n">62.8%</td><td class="n">92.2%</td><td class="n">50.9%</td></tr>
+<tr><td>15% weight, only when it differs from the name</td><td class="n">88.2%</td><td class="n">62.8%</td><td class="n">92.2%</td><td class="n">50.5%</td></tr>
+<tr><td>Merge its new words into the name</td><td class="n">89.2%</td><td class="n">56.9%</td><td class="n">92.4%</td><td class="n">46.0%</td></tr>
+</tbody>
+</table>
+
+<p>The last design buys 1.4 points of precision for <strong>6.9 of recall</strong> — a bad
+trade. The reason is in the data: <strong>75.9% of descriptions add no new word at all</strong>,
+7.0% add one or two, and 17.1% add three or more. <strong>Rule: show it, never score it.</strong>
+If descriptions get richer, re-run <code>desc_test.py</code> and revisit.</p>
+
+<h2><span class="num">15</span>The three code files</h2>
+
+<p>All three live in <code>item_duplicate_check/core/</code> and are <strong>pure
+Python</strong> — no Frappe import, no database — so they run and test in milliseconds
+without a site. Each carries a long header comment explaining what it does and why.</p>
+
+<h3><code>normalize.py</code> — make two names comparable</h3>
+<pre>"Nunc(tm) 96-Well Plate "   ->  "nunc 96well plate"
+"nunc 96 well plate."       ->  "nunc 96well plate"</pre>
+<p>The ten rules from section 2, in a fixed order.</p>
+
+<div class="card bad">
+<h4>A bug the self-test caught</h4>
+<p>Trademark stripping originally ran <em>after</em> NFKC. But NFKC expands <code>™</code>
+into the two letters <code>TM</code>, which then glue onto the word in front:
+<code>"Nunc(tm) 96-Well Plate"</code> → <code>"nunctm 96well plate"</code>. Moving the strip
+before NFKC fixed it. Left alone it would have silently broken matching for the
+<strong>12.7%</strong> of names carrying a trademark symbol.</p>
+</div>
+
+<h3><code>specs.py</code> — block matches between look-alikes</h3>
+<p>The four checks from section 3, cheapest first, each returning a reason or nothing. Two
+rules stop it over-firing:</p>
+<ul>
+<li><strong>Abstention</strong> — a check only fires when <em>both</em> names have something
+to compare. Otherwise <code>Paraformaldehyde</code> could never match
+<code>Paraformaldehyde for synthesis</code>, and that class of match is one of the most
+valuable we have.</li>
+<li><strong>Subset, not equality</strong> — within a shared measurement, if one side's values
+are contained in the other's, nothing actually disagrees.</li>
+</ul>
+<pre>{mass 500}             vs {mass 1000}       -> CANCEL   neither contains the other
+{length 0.22um, 33mm}  vs {length 0.22um}   -> ALLOW    one name is just fuller</pre>
+<p>The second case is real: <code>Syringe Filter Unit, 0.22 µm, PVDF, 33 mm</code> and
+<code>Millex filter unit (0.22 um)</code> are the same product. An earlier version compared
+sets for equality and wrongly cancelled it.</p>
+<p><strong>Every cancel returns why</strong> — e.g. <code>"size: mass [500.0] vs
+[1000.0]"</code> — shown to the user and written to Item Match Log, so a human can later
+judge whether the rule was right. That log is how this file gets improved.</p>
+
+<h3><code>itemcode.py</code> — read the code, discard the serial</h3>
+<p>Parses all four shapes from section 13 and sets <code>has_category</code> so callers know
+when the category is real. <code>same_category_different_division()</code> returns true when
+two codes share a category but sit under different divisions — the duplication signal.</p>
+
+<h3>What these three files measure</h3>
+<p>Over the validation split — 3,838 items, 978 duplicate pairs, 978 hard non-duplicates:</p>
+
+<table>
+<thead><tr><th>Threshold</th><th class="n">Precision</th><th class="n">Recall</th></tr></thead>
+<tbody>
+<tr><td>0.60</td><td class="n">85.4%</td><td class="n">73.3%</td></tr>
+<tr><td>0.75</td><td class="n">91.0%</td><td class="n">65.0%</td></tr>
+<tr><td>0.85</td><td class="n">92.1%</td><td class="n">60.7%</td></tr>
+<tr class="hl"><td>0.92</td><td class="n">97.9%</td><td class="n">53.7%</td></tr>
+</tbody>
+</table>
+
+<pre>earlier prototype at 0.92   precision 98.5%   recall 39.2%
+these modules               precision 97.9%   recall 53.7%
+                            +14.5 points of recall for 0.6 of precision</pre>
+
+<p>Almost all of that gain came from the <strong>subset rule</strong>. Each file has a
+<code>__main__</code> block of real catalogue rows; <code>specs.py</code> prints 13 known
+pairs — 8 that must cancel, 5 that must be allowed — and all 13 currently pass.</p>
+
+<pre>cd apps/item_duplicate_check
+../../env/bin/python -m item_duplicate_check.core.normalize
+../../env/bin/python -m item_duplicate_check.core.specs
+../../env/bin/python -m item_duplicate_check.core.itemcode</pre>
+<h2><span class="num">—</span>Every decision on one page</h2>
+
+<table>
+<thead><tr><th style="width:38mm">We chose</th><th style="width:38mm">We rejected</th><th>Decided by</th></tr></thead>
+<tbody>
+<tr><td>Search first, model last</td><td>Model first; AI for everything</td><td>The model added only +1.2 points</td></tr>
+<tr><td>A separate app</td><td>Code in another app; server scripts</td><td>Needs its own independent off switch</td></tr>
+<tr><td>10 text-cleaning rules, order locked</td><td>Raw text; sound-alike codes</td><td>12% carry a ™; sound codes are near-random on chemical names</td></tr>
+<tr class="hl"><td>A 4-part safety gate</td><td>Size only; let the model learn it</td><td>81.4% → 91.0% precision; the model weighted a size clash at only &minus;0.23</td></tr>
+<tr><td>Rare-word index</td><td>Child-group filter; vector database</td><td>24.7% vs 89.7% recall</td></tr>
+<tr><td>Hand-weighted score</td><td>Model first</td><td>Explainable, tunable, works on day one</td></tr>
+<tr><td>Cat No as a lookup only</td><td>Cat No as a model clue</td><td>Avoids label leakage; 31% of items have none</td></tr>
+<tr><td>name + cat_no + makes</td><td>stock_uom, description, brand</td><td>The separation table</td></tr>
+<tr><td>Logistic Regression</td><td>Neural net; embeddings as judge</td><td>Too little data; embeddings rate 500g and 1kg as 97% alike</td></tr>
+<tr><td>Hard non-duplicates from our own search</td><td>Random pairs</td><td>Training must match live conditions</td></tr>
+<tr><td>Warn in 3 bands</td><td>One single threshold</td><td>Needs tuning on real traffic</td></tr>
+<tr><td>Never block a save</td><td>Block high-confidence duplicates</td><td>79 CAPEX rows are intentional</td></tr>
+<tr><td>Log everything from day one</td><td>Add logging later</td><td>It is the future training data</td></tr>
+<tr><td>Precision first</td><td>Recall first</td><td>Trust does not come back</td></tr>
+<tr><td>Work from the Excel export</td><td>Wait for a database backup</td><td>No backup was available</td></tr>
+<tr><td>Parse the Item Code, never text-match it</td><td>Treat the code as text</td><td>Two unrelated codes are 92% similar as strings</td></tr>
+<tr><td>70/15/15 split by product group</td><td>Shuffle rows and split</td><td>Row-splitting leaks the same product into both sides</td></tr>
+<tr><td>6 major / 5 minor, decided by ablation</td><td>Rank by separation</td><td>Separation ignores coverage; ablation counts decisions changed</td></tr>
+<tr><td>Description is major for display, never scored</td><td>Score it; drop it entirely</td><td>5 designs tested, none beat ignoring it; 75.9% add no new word</td></tr>
+<tr><td>Strip ™ <em>before</em> Unicode NFKC</td><td>Strip it after</td><td>NFKC expands ™ into "TM", which glues onto the previous word</td></tr>
+<tr class="hl"><td>Size check uses subset, not equality</td><td>Compare size sets for equality</td><td>Equality wrongly cancels <code>{0.22um, 33mm}</code> vs <code>{0.22um}</code> — the same product</td></tr>
+</tbody>
+</table>
+
+<h2><span class="num">—</span>Every measured number, and where the work stands</h2>
+
+<div class="cols2">
+<table>
+<thead><tr><th>Measured</th><th class="n">Value</th></tr></thead>
+<tbody>
+<tr><td>Items in the catalogue</td><td class="n">22,204</td></tr>
+<tr><td>…of which disabled</td><td class="n">4,300</td></tr>
+<tr><td>Items sharing a Cat No</td><td class="n">7,781 (35%)</td></tr>
+<tr><td>Groups with identical names</td><td class="n">2,782</td></tr>
+<tr class="hl"><td>Precision, full safety gate</td><td class="n">91.0%</td></tr>
+<tr><td>Precision, size-only gate</td><td class="n">81.4%</td></tr>
+<tr><td>Precision, no gate</td><td class="n">78.1%</td></tr>
+<tr><td>Top-5, rare-word index</td><td class="n">89.7%</td></tr>
+<tr><td>Top-5, with the full gate</td><td class="n">79.5%</td></tr>
+<tr><td>Top-5, child-group filter</td><td class="n">24.7%</td></tr>
+<tr><td>Pairs in a <em>different</em> child group</td><td class="n">80.5%</td></tr>
+<tr><td>Typical search time</td><td class="n">4.7 ms</td></tr>
+<tr><td>Full pipeline time</td><td class="n">7.5 ms</td></tr>
+<tr><td>Alert rate at 0.92</td><td class="n">33%</td></tr>
+<tr><td>Model's gain over the rules</td><td class="n">+1.2</td></tr>
+<tr><td>Duplicate pairs available</td><td class="n">5,473</td></tr>
+<tr><td>Non-duplicate pairs available</td><td class="n">592,497</td></tr>
+</tbody>
+</table>
+
+<table>
+<thead><tr><th>Part</th><th class="n">Status</th></tr></thead>
+<tbody>
+<tr><td>App created</td><td class="n"><span class="tag done">Done</span></td></tr>
+<tr><td>Data audited</td><td class="n"><span class="tag done">Done</span></td></tr>
+<tr><td>Item Code scheme decoded</td><td class="n"><span class="tag done">Done</span></td></tr>
+<tr><td>Split, leakage checked</td><td class="n"><span class="tag done">Done</span></td></tr>
+<tr><td>Columns cut 57 → 11</td><td class="n"><span class="tag done">Done</span></td></tr>
+<tr><td>Major / minor by ablation</td><td class="n"><span class="tag done">Done</span></td></tr>
+<tr><td><code>core/normalize.py</code></td><td class="n"><span class="tag done">Done</span></td></tr>
+<tr><td><code>core/specs.py</code></td><td class="n"><span class="tag done">Done</span></td></tr>
+<tr><td><code>core/itemcode.py</code></td><td class="n"><span class="tag done">Done</span></td></tr>
+<tr><td><code>core/corpus.py</code></td><td class="n"><span class="tag todo">Not started</span></td></tr>
+<tr><td><code>core/scorer.py</code></td><td class="n"><span class="tag todo">Not started</span></td></tr>
+<tr><td><code>tests/test_specs.py</code></td><td class="n"><span class="tag todo">Not started</span></td></tr>
+<tr><td>Doctypes</td><td class="n"><span class="tag todo">Not started</span></td></tr>
+<tr><td>API and hooks</td><td class="n"><span class="tag todo">Not started</span></td></tr>
+<tr><td>Form panel</td><td class="n"><span class="tag todo">Not started</span></td></tr>
+<tr><td>Test harness</td><td class="n"><span class="tag todo">Prototype only</span></td></tr>
+</tbody>
+</table>
+</div>
+
+<p>The three thinking files are built, documented and self-tested. The Frappe plumbing around
+them — settings, log, API, hooks, panel — has not been started; <code>hooks.py</code> is
+still the stock template with everything commented out.</p>
+
+<div class="card bad">
+<h4>The open question that blocks half the plan: are items still being created?</h4>
+<p>On <code>site_local</code>, new items stopped in <strong>February 2026</strong>, while
+Stock Entries and Material Requests continue to October 2026. Before February the site
+created about <strong>708 items a month</strong> — roughly 700 real decisions in three
+months, which is plenty. After February it is close to zero.</p>
+<p><strong>If yes</strong> — build everything, including the live panel and the model.
+<strong>If no</strong> — skip the live panel and the model, and focus on cleaning the 7,781
+items already caught in Cat No clashes. The safety rules are needed either way.</p>
+<p>This <em>cannot</em> be answered from <code>Item.xlsx</code>, because the export has no
+creation date column.</p>
+</div>
+
+<h4>Suggested order of work</h4>
+<ol>
+<li><strong>Re-export Item.xlsx with the Created On column</strong> and answer the question
+above. One column, and it sets the scope of everything else.</li>
+<li><strong>Write <code>tests/test_specs.py</code></strong> — move the 13 self-test pairs out
+of the <code>__main__</code> block into a real test file. This document already calls it the
+living rulebook, but the file does not exist yet.</li>
+<li><strong>Build the manufacturer alias table</strong> for <code>makes</code> — the one
+field whose measured value should rise, with 111 spellings of "Thermo" currently costing
+recall.</li>
+<li><strong>Build <code>core/corpus.py</code></strong>, the rare-word index. Nothing can be
+scored at scale until candidates can be found.</li>
+<li><strong>Build Item Match Log and start writing to it</strong>, even silently. Every week
+without it is a week of free training data thrown away.</li>
+<li><strong>Then</strong> the scorer, the API, the hooks and the panel.</li>
+</ol>
+
+<h2><span class="num">—</span>Note of changes made to produce this document</h2>
+
+<p>This PDF was generated from <code>README.md</code> in the app repository. The app's code
+was <strong>not modified</strong> — no Python file, <code>hooks.py</code>, or data file was
+touched. The changes below are presentation only, recorded here so the two documents can be
+kept in step.</p>
+
+<table>
+<thead><tr><th style="width:34mm">Change</th><th>What was done, and why</th></tr></thead>
+<tbody>
+<tr><td><strong>Language simplified</strong></td><td>Technical terms moved out of the prose into a glossary on page 2 — precision, recall, separation, ablation, veto gate, label leakage. "Digit-bearing tokens" became "words containing a number"; "positive pairs" became "duplicate pairs"; "hard negatives" became "hard non-duplicates". Long sentences split.</td></tr>
+<tr><td><strong>Sections merged</strong></td><td>README sections 10 + 11 merged into section 9 here; 12 + 13 into 10 and 11; 8 + 9 into 8; 14 + 16 into 12; 17 + 18 into 14. The content is the same; the headings are fewer. README numbering no longer matches this document's numbering.</td></tr>
+<tr><td><strong>Condensed</strong></td><td>Repeated explanations removed, and "other options" tables folded into prose where the rejection reason was one line. No decision, table of measurements, or figure was dropped.</td></tr>
+<tr><td><strong>Design added</strong></td><td>Cover page, pipeline diagram, orange-and-purple theme, highlighted rows for the headline numbers, and page-break rules so no table row, card or code block splits across pages.</td></tr>
+<tr class="hl"><td><strong>Discrepancy flagged</strong></td><td>The README gives <code>makes</code> separation as <strong>+60.0</strong> in section 7 and <strong>+57.1</strong> in section 17; <code>reference_old_item_code</code> as <strong>+80.2</strong> and <strong>+79.3</strong>. Both pairs were measured on slightly different pair samples. This PDF quotes the section-7 figures and treats the ranking, not the decimal, as the finding. <strong>Worth reconciling in the README</strong> — it is the one place the "every number is measured" claim contradicts itself.</td></tr>
+<tr><td><strong>Known issue updated</strong></td><td>README section 3 lists the size-set equality problem as a "known issue to fix". The code in <code>specs.py</code> already implements the subset rule, and section 19.4 measures the +14.5 recall gain from it. This PDF records it as fixed. <strong>README section 3 should be updated to match.</strong></td></tr>
+<tr><td><strong>Added, not in the README</strong></td><td>The "suggested order of work" list above. It follows from the README's own findings but was never written down as a sequence. Also <code>tests/test_specs.py</code> added to the status table as "not started" — the README refers to it as the living rulebook, but the file does not exist.</td></tr>
+</tbody>
+</table>
+
+<div class="card warn">
+<h4>Keeping the two in step</h4>
+<p>If a decision changes, measure it first, then update <strong>both</strong>
+<code>README.md</code> and this document, and add a row to the table above. The HTML source
+for this PDF is <code>Item_Duplicate_Check_Record.html</code> in the app root — edit it and
+re-print rather than editing the PDF.</p>
+</div>
+
+<div class="endnote">
+Item Duplicate Check &nbsp;·&nbsp; decision record &nbsp;·&nbsp; app version 0.0.1
+&nbsp;·&nbsp; printed 19 October 2026 &nbsp;·&nbsp; MCPL &nbsp;·&nbsp; MIT licence
+&nbsp;·&nbsp; condensed from README.md
+</div>
+
+</body>
+</html>

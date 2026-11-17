@@ -1,0 +1,280 @@
+{
+  "variants": {
+    "A name only | logistic": {
+      "pr_auc": 0.8666150462265958,
+      "features": [
+        "ordered_similarity",
+        "raw_similarity",
+        "set_overlap",
+        "length_ratio",
+        "set_overlap_x_length",
+        "idf_shared_fraction",
+        "shared_token_count",
+        "token_count_min",
+        "token_count_diff",
+        "digit_token_overlap",
+        "first_token_match"
+      ],
+      "bands": {
+        "0.75": [
+          0.8614035087719298,
+          0.7095375722543352
+        ],
+        "0.85": [
+          0.9356136820925554,
+          0.6719653179190751
+        ],
+        "0.92": [
+          0.9895287958115183,
+          0.546242774566474
+        ]
+      }
+    },
+    "A name only | boosted": {
+      "pr_auc": 0.8803632398239982,
+      "features": [
+        "ordered_similarity",
+        "raw_similarity",
+        "set_overlap",
+        "length_ratio",
+        "set_overlap_x_length",
+        "idf_shared_fraction",
+        "shared_token_count",
+        "token_count_min",
+        "token_count_diff",
+        "digit_token_overlap",
+        "first_token_match"
+      ],
+      "bands": {
+        "0.75": [
+          0.9768421052631578,
+          0.6705202312138728
+        ],
+        "0.85": [
+          0.9956896551724138,
+          0.6676300578034682
+        ],
+        "0.92": [
+          1.0,
+          0.6647398843930635
+        ]
+      }
+    },
+    "B name + makes | logistic": {
+      "pr_auc": 0.8927741797678378,
+      "features": [
+        "ordered_similarity",
+        "raw_similarity",
+        "set_overlap",
+        "length_ratio",
+        "set_overlap_x_length",
+        "idf_shared_fraction",
+        "shared_token_count",
+        "token_count_min",
+        "token_count_diff",
+        "digit_token_overlap",
+        "first_token_match",
+        "makes_agree",
+        "makes_abstain"
+      ],
+      "bands": {
+        "0.75": [
+          0.8898305084745762,
+          0.7586705202312138
+        ],
+        "0.85": [
+          0.9503968253968254,
+          0.6921965317919075
+        ],
+        "0.92": [
+          0.9730337078651685,
+          0.6257225433526011
+        ]
+      }
+    },
+    "B name + makes | boosted": {
+      "pr_auc": 0.9115696033355818,
+      "features": [
+        "ordered_similarity",
+        "raw_similarity",
+        "set_overlap",
+        "length_ratio",
+        "set_overlap_x_length",
+        "idf_shared_fraction",
+        "shared_token_count",
+        "token_count_min",
+        "token_count_diff",
+        "digit_token_overlap",
+        "first_token_match",
+        "makes_agree",
+        "makes_abstain"
+      ],
+      "bands": {
+        "0.75": [
+          0.9695121951219512,
+          0.6893063583815029
+        ],
+        "0.85": [
+          0.9729166666666667,
+          0.6748554913294798
+        ],
+        "0.92": [
+          0.989247311827957,
+          0.6647398843930635
+        ]
+      }
+    },
+    "C everything (current) | logistic": {
+      "pr_auc": 0.8925507164325269,
+      "features": [
+        "ordered_similarity",
+        "raw_similarity",
+        "set_overlap",
+        "length_ratio",
+        "set_overlap_x_length",
+        "idf_shared_fraction",
+        "shared_token_count",
+        "token_count_min",
+        "token_count_diff",
+        "digit_token_overlap",
+        "first_token_match",
+        "makes_agree",
+        "makes_abstain",
+        "hsn_agree",
+        "hsn_abstain",
+        "department_agree",
+        "department_abstain",
+        "requester_agree",
+        "requester_abstain",
+        "naming_series_differs",
+        "same_category_other_division"
+      ],
+      "bands": {
+        "0.75": [
+          0.8959044368600683,
+          0.7586705202312138
+        ],
+        "0.85": [
+          0.9540918163672655,
+          0.6907514450867052
+        ],
+        "0.92": [
+          0.9761904761904762,
+          0.5924855491329479
+        ]
+      }
+    },
+    "C everything (current) | boosted": {
+      "pr_auc": 0.914373244473512,
+      "features": [
+        "ordered_similarity",
+        "raw_similarity",
+        "set_overlap",
+        "length_ratio",
+        "set_overlap_x_length",
+        "idf_shared_fraction",
+        "shared_token_count",
+        "token_count_min",
+        "token_count_diff",
+        "digit_token_overlap",
+        "first_token_match",
+        "makes_agree",
+        "makes_abstain",
+        "hsn_agree",
+        "hsn_abstain",
+        "department_agree",
+        "department_abstain",
+        "requester_agree",
+        "requester_abstain",
+        "naming_series_differs",
+        "same_category_other_division"
+      ],
+      "bands": {
+        "0.75": [
+          0.973305954825462,
+          0.684971098265896
+        ],
+        "0.85": [
+          0.9830148619957537,
+          0.6690751445086706
+        ],
+        "0.92": [
+          0.9934354485776805,
+          0.6560693641618497
+        ]
+      }
+    },
+    "D name + makes + CAT NO | logistic": {
+      "pr_auc": 0.9999999999999999,
+      "features": [
+        "ordered_similarity",
+        "raw_similarity",
+        "set_overlap",
+        "length_ratio",
+        "set_overlap_x_length",
+        "idf_shared_fraction",
+        "shared_token_count",
+        "token_count_min",
+        "token_count_diff",
+        "digit_token_overlap",
+        "first_token_match",
+        "makes_agree",
+        "makes_abstain",
+        "cat_no_agree"
+      ],
+      "bands": {
+        "0.75": [
+          1.0,
+          0.9725433526011561
+        ],
+        "0.85": [
+          1.0,
+          0.9725433526011561
+        ],
+        "0.92": [
+          1.0,
+          0.9725433526011561
+        ]
+      }
+    },
+    "D name + makes + CAT NO | boosted": {
+      "pr_auc": 1.0,
+      "features": [
+        "ordered_similarity",
+        "raw_similarity",
+        "set_overlap",
+        "length_ratio",
+        "set_overlap_x_length",
+        "idf_shared_fraction",
+        "shared_token_count",
+        "token_count_min",
+        "token_count_diff",
+        "digit_token_overlap",
+        "first_token_match",
+        "makes_agree",
+        "makes_abstain",
+        "cat_no_agree"
+      ],
+      "bands": {
+        "0.75": [
+          1.0,
+          0.9725433526011561
+        ],
+        "0.85": [
+          1.0,
+          0.9725433526011561
+        ],
+        "0.92": [
+          1.0,
+          0.9725433526011561
+        ]
+      }
+    }
+  },
+  "best_honest": "C everything (current) | boosted",
+  "baseline": {
+    "precision_at_0.92": 1.0,
+    "recall_at_0.92": 0.642
+  },
+  "note": "Variant D includes cat_no_agree and is reported only to demonstrate label leakage. It must never be shipped."
+}

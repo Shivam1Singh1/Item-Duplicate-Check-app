@@ -1,0 +1,234 @@
+{
+ "actions": [],
+ "allow_rename": 0,
+ "autoname": "hash",
+ "creation": "2026-10-21 00:00:00",
+ "description": "One row per duplicate check, including the silent ones nobody saw. The two user-judgement fields are the point: they are real decisions on real pairs, captured for free, and they are the only training labels free of Cat No leakage.",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "section_typed",
+  "typed_item_name",
+  "cat_no",
+  "makes",
+  "column_break_typed",
+  "item_code",
+  "maintain_stock",
+  "typed_description",
+  "section_result",
+  "band",
+  "top_score",
+  "shown_to_user",
+  "column_break_result",
+  "elapsed_ms",
+  "candidates_considered",
+  "engine_version",
+  "section_matches",
+  "matches",
+  "section_cancelled",
+  "cancelled_help",
+  "cancelled_matches",
+  "section_judgement",
+  "user_action",
+  "override_reason",
+  "column_break_judgement",
+  "user"
+ ],
+ "fields": [
+  {
+   "fieldname": "section_typed",
+   "fieldtype": "Section Break",
+   "label": "What Was Typed"
+  },
+  {
+   "fieldname": "typed_item_name",
+   "fieldtype": "Data",
+   "in_global_search": 1,
+   "in_list_view": 1,
+   "label": "Typed Item Name",
+   "length": 255
+  },
+  {
+   "description": "As typed. Used only as a Step 0 exact-match key, never as a scoring clue.",
+   "fieldname": "cat_no",
+   "fieldtype": "Data",
+   "label": "Cat No",
+   "length": 255
+  },
+  {
+   "fieldname": "makes",
+   "fieldtype": "Data",
+   "label": "Makes",
+   "length": 255
+  },
+  {
+   "fieldname": "column_break_typed",
+   "fieldtype": "Column Break"
+  },
+  {
+   "description": "Set when an existing Item was being edited rather than a new one created. That item is excluded from its own results.",
+   "fieldname": "item_code",
+   "fieldtype": "Data",
+   "label": "Item Being Edited",
+   "length": 255
+  },
+  {
+   "default": "1",
+   "description": "Checks on non-stock items are skipped before any scoring, so a logged row is always a stock item. Kept as a column so that assumption is visible rather than implied.",
+   "fieldname": "maintain_stock",
+   "fieldtype": "Check",
+   "label": "Maintain Stock"
+  },
+  {
+   "description": "Logged for the reviewer, never scored.",
+   "fieldname": "typed_description",
+   "fieldtype": "Small Text",
+   "label": "Typed Description (display only)"
+  },
+  {
+   "fieldname": "section_result",
+   "fieldtype": "Section Break",
+   "label": "Result"
+  },
+  {
+   "fieldname": "band",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Band",
+   "options": "\nstrong\nsoft\nnone"
+  },
+  {
+   "fieldname": "top_score",
+   "fieldtype": "Float",
+   "in_list_view": 1,
+   "label": "Top Score",
+   "precision": "4"
+  },
+  {
+   "default": "0",
+   "description": "Unchecked for every check made during the silent run. Users only judge pairs they were shown, so this column is what keeps that bias visible when the log is analysed later.",
+   "fieldname": "shown_to_user",
+   "fieldtype": "Check",
+   "in_standard_filter": 1,
+   "label": "Shown To User"
+  },
+  {
+   "fieldname": "column_break_result",
+   "fieldtype": "Column Break"
+  },
+  {
+   "description": "End to end, server side. Budget is 300 ms.",
+   "fieldname": "elapsed_ms",
+   "fieldtype": "Int",
+   "in_list_view": 1,
+   "label": "Elapsed (ms)"
+  },
+  {
+   "description": "How many existing items the rare-word index shortlisted. Equal to the whole catalogue when the name had fewer than two usable words and the search fell back to a full scan.",
+   "fieldname": "candidates_considered",
+   "fieldtype": "Int",
+   "label": "Candidates Considered"
+  },
+  {
+   "fieldname": "engine_version",
+   "fieldtype": "Data",
+   "in_standard_filter": 1,
+   "label": "Engine Version",
+   "length": 60
+  },
+  {
+   "fieldname": "section_matches",
+   "fieldtype": "Section Break",
+   "label": "Top Matches"
+  },
+  {
+   "description": "The top 5, including the ones below the threshold that the user never saw.",
+   "fieldname": "matches",
+   "fieldtype": "Table",
+   "label": "Matches",
+   "options": "Item Match Log Entry"
+  },
+  {
+   "collapsible": 1,
+   "fieldname": "section_cancelled",
+   "fieldtype": "Section Break",
+   "label": "Cancelled By A Safety Rule"
+  },
+  {
+   "fieldname": "cancelled_help",
+   "fieldtype": "HTML",
+   "options": "<p>Pairs that scored well enough to be offered and were then cancelled by the veto gate - a different size, grade, spec code or negation. These are the most useful rows in this table: if a rule is wrong, it shows up here first, with the reason that killed it.</p>"
+  },
+  {
+   "fieldname": "cancelled_matches",
+   "fieldtype": "Table",
+   "label": "Cancelled Near Misses",
+   "options": "Item Match Log Entry"
+  },
+  {
+   "fieldname": "section_judgement",
+   "fieldtype": "Section Break",
+   "label": "What The User Did Next"
+  },
+  {
+   "description": "Filled in from the form panel. This is a human judgement on a real pair - the thing that makes this table worth building on day one.",
+   "fieldname": "user_action",
+   "fieldtype": "Select",
+   "in_standard_filter": 1,
+   "label": "User Action",
+   "options": "\nused existing\ncreated anyway\ngave up"
+  },
+  {
+   "depends_on": "eval:doc.user_action == \"created anyway\"",
+   "description": "Asked for only when a strong warning was ignored. Four answers cover the real cases; anything else means the rules need a look.",
+   "fieldname": "override_reason",
+   "fieldtype": "Select",
+   "label": "Override Reason",
+   "options": "\ndifferent size\ndifferent grade\ngenuinely new\nservice line"
+  },
+  {
+   "fieldname": "column_break_judgement",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "user",
+   "fieldtype": "Link",
+   "in_standard_filter": 1,
+   "label": "User",
+   "options": "User"
+  }
+ ],
+ "in_create": 1,
+ "index_web_pages_for_search": 0,
+ "links": [],
+ "modified": "2026-10-21 00:00:00",
+ "modified_by": "Administrator",
+ "module": "Item Duplicate Check",
+ "name": "Item Match Log",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "export": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Item Manager"
+  }
+ ],
+ "sort_field": "creation",
+ "sort_order": "DESC",
+ "states": [],
+ "track_changes": 0
+}

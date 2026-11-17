@@ -1,0 +1,107 @@
+{
+ "actions": [],
+ "allow_rename": 0,
+ "creation": "2026-10-21 00:00:00",
+ "description": "One suggested item from one duplicate check. Child of Item Match Log.",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "item",
+  "item_name",
+  "score",
+  "band",
+  "via",
+  "reason",
+  "cancel_reason",
+  "disabled",
+  "item_description",
+  "components"
+ ],
+ "fields": [
+  {
+   "columns": 2,
+   "fieldname": "item",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Item",
+   "options": "Item"
+  },
+  {
+   "columns": 3,
+   "fieldname": "item_name",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Item Name"
+  },
+  {
+   "columns": 1,
+   "fieldname": "score",
+   "fieldtype": "Float",
+   "in_list_view": 1,
+   "label": "Score",
+   "precision": "4"
+  },
+  {
+   "columns": 1,
+   "fieldname": "band",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "label": "Band",
+   "options": "\nstrong\nsoft\nnone"
+  },
+  {
+   "description": "cat_no = found by an exact Cat No lookup (Step 0). name = found and scored by name.",
+   "fieldname": "via",
+   "fieldtype": "Select",
+   "label": "Found Via",
+   "options": "\nname\ncat_no"
+  },
+  {
+   "columns": 3,
+   "description": "The human sentence the user was shown, e.g. \"names 97% alike - same manufacturer (thermo) - both 50 mL\".",
+   "fieldname": "reason",
+   "fieldtype": "Small Text",
+   "in_list_view": 1,
+   "label": "Why It Matched"
+  },
+  {
+   "description": "Which safety rule cancelled this pair, if any. Set means the pair was NOT offered to the user however alike the names were.",
+   "fieldname": "cancel_reason",
+   "fieldtype": "Small Text",
+   "label": "Why It Was Cancelled"
+  },
+  {
+   "default": "0",
+   "description": "The suggested item is disabled. Still a valid answer to \"does this already exist\", but it ranks below live items.",
+   "fieldname": "disabled",
+   "fieldtype": "Check",
+   "label": "Suggested Item Is Disabled"
+  },
+  {
+   "description": "Carried for the reviewer only. Description is never scored: 80.9% of them are a near-copy of the item name.",
+   "fieldname": "item_description",
+   "fieldtype": "Small Text",
+   "label": "Item Description (display only)"
+  },
+  {
+   "description": "Per-component breakdown as JSON, so a logged decision can be re-derived exactly: ordered, word_set, length_penalty, rare, makes, raw_score.",
+   "fieldname": "components",
+   "fieldtype": "Code",
+   "label": "Component Scores",
+   "options": "JSON"
+  }
+ ],
+ "index_web_pages_for_search": 0,
+ "istable": 1,
+ "links": [],
+ "modified": "2026-10-21 00:00:00",
+ "modified_by": "Administrator",
+ "module": "Item Duplicate Check",
+ "name": "Item Match Log Entry",
+ "owner": "Administrator",
+ "permissions": [],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

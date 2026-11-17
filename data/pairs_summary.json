@@ -1,0 +1,63 @@
+{
+  "random_state": 42,
+  "negatives_per_positive": 4,
+  "max_pairs_per_group": 6,
+  "features": [
+    "ordered_similarity",
+    "raw_similarity",
+    "set_overlap",
+    "length_ratio",
+    "set_overlap_x_length",
+    "idf_shared_fraction",
+    "shared_token_count",
+    "token_count_min",
+    "token_count_diff",
+    "digit_token_overlap",
+    "first_token_match",
+    "makes_agree",
+    "makes_abstain",
+    "hsn_agree",
+    "hsn_abstain",
+    "department_agree",
+    "department_abstain",
+    "requester_agree",
+    "requester_abstain",
+    "naming_series_differs",
+    "same_category_other_division"
+  ],
+  "leakage": {
+    "product group spans splits": 0,
+    "identical normalised name": 0,
+    "shared cleaned Cat No": 0,
+    "shared old item code": 0
+  },
+  "splits": {
+    "train": {
+      "items": 12507,
+      "positive_pairs": 3311,
+      "negative_pairs": 12939,
+      "rows": 16250,
+      "positives_cancelled_by_veto": 171,
+      "seconds": 98.0,
+      "file": "pairs_train.csv"
+    },
+    "validation": {
+      "items": 2679,
+      "positive_pairs": 692,
+      "negative_pairs": 2398,
+      "rows": 3090,
+      "positives_cancelled_by_veto": 19,
+      "seconds": 4.6,
+      "file": "pairs_validation.csv"
+    },
+    "test": {
+      "items": 2678,
+      "positive_pairs": 734,
+      "negative_pairs": 2525,
+      "rows": 3259,
+      "positives_cancelled_by_veto": 42,
+      "seconds": 6.0,
+      "file": "pairs_test.csv"
+    }
+  }
+}

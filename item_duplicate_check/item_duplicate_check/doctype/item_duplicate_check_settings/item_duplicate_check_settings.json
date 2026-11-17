@@ -1,0 +1,171 @@
+{
+ "actions": [],
+ "allow_rename": 0,
+ "creation": "2026-10-21 00:00:00",
+ "description": "Kill switch, warning thresholds and scoring weights for the duplicate check. Nothing in this app is hard-coded.",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "section_switches",
+  "enabled",
+  "silent_mode",
+  "column_break_switches",
+  "engine",
+  "engine_version",
+  "section_thresholds",
+  "strong_threshold",
+  "column_break_thresholds",
+  "soft_threshold",
+  "section_weights",
+  "weights_help",
+  "weight_ordered",
+  "weight_word_set",
+  "column_break_weights",
+  "weight_rare",
+  "weight_makes"
+ ],
+ "fields": [
+  {
+   "fieldname": "section_switches",
+   "fieldtype": "Section Break",
+   "label": "Switches"
+  },
+  {
+   "default": "0",
+   "description": "Off by default. While this is unchecked the app does nothing at all - no check runs, no log row is written. This is the kill switch.",
+   "fieldname": "enabled",
+   "fieldtype": "Check",
+   "in_list_view": 1,
+   "label": "Enabled"
+  },
+  {
+   "default": "1",
+   "description": "On by default. The check runs and writes to Item Match Log, but the user is shown nothing. Run like this for two weeks to collect real traffic, then tune the thresholds on it before anybody sees a warning.",
+   "fieldname": "silent_mode",
+   "fieldtype": "Check",
+   "in_list_view": 1,
+   "label": "Silent Mode (log only, show nothing)"
+  },
+  {
+   "fieldname": "column_break_switches",
+   "fieldtype": "Column Break"
+  },
+  {
+   "default": "rules",
+   "description": "Which scorer decides. <b>rules</b> is the hand-written weighted sum; <b>model</b> is the trained pair classifier. Measured on validation with the veto gate applied: rules 100.0% precision and 64.2% recall at 0.92, model 99.3% and 65.5%. Decision 8 says ship the rules unless the model clearly wins, and it does not, so <b>rules</b> is the default. If <b>model</b> is selected but the model file is missing or was trained on a different feature list, the app falls back to rules on its own and logs why.",
+   "fieldname": "engine",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "label": "Scoring Engine",
+   "options": "rules\nmodel"
+  },
+  {
+   "default": "rules-1.0",
+   "description": "Stamped onto every Item Match Log row. Change it whenever a rule or a weight changes, so logged decisions can be attributed to the version that made them.",
+   "fieldname": "engine_version",
+   "fieldtype": "Data",
+   "label": "Engine Version"
+  },
+  {
+   "fieldname": "section_thresholds",
+   "fieldtype": "Section Break",
+   "label": "Warning Thresholds"
+  },
+  {
+   "default": "0.92",
+   "description": "At or above this score the user is told the item looks like it already exists. A starting guess, not a result: at 0.92 the measured alert rate is 33%, which is high - expect to raise it after the silent run.",
+   "fieldname": "strong_threshold",
+   "fieldtype": "Float",
+   "in_list_view": 1,
+   "label": "Strong Threshold",
+   "precision": "3"
+  },
+  {
+   "fieldname": "column_break_thresholds",
+   "fieldtype": "Column Break"
+  },
+  {
+   "default": "0.75",
+   "description": "Between this and the strong threshold the user gets a quiet note. Below it, nothing is shown - but the check is still logged.",
+   "fieldname": "soft_threshold",
+   "fieldtype": "Float",
+   "in_list_view": 1,
+   "label": "Soft Threshold",
+   "precision": "3"
+  },
+  {
+   "fieldname": "section_weights",
+   "fieldtype": "Section Break",
+   "label": "Scoring Weights"
+  },
+  {
+   "fieldname": "weights_help",
+   "fieldtype": "HTML",
+   "options": "<p>score = veto gate &times; ( <b>0.47</b> &times; ordered word similarity + <b>0.21</b> &times; word set similarity &times; length penalty + <b>0.18</b> &times; rare word overlap + <b>0.14</b> &times; makes agreement )</p><p>The veto gate is 0 or 1; 0 cancels the match whatever the score. An exact Cat No match returns 0.97 and skips the weights, but the gate still applies.</p><p>Weights do not have to add up to 1. They are normalised when the score is computed, and the makes weight is dropped from the divisor entirely when either side has no manufacturer - abstaining must not count as disagreeing.</p>"
+  },
+  {
+   "default": "0.47",
+   "description": "Both names' words sorted, then compared character by character. The workhorse: it handles word order and typos at once.",
+   "fieldname": "weight_ordered",
+   "fieldtype": "Float",
+   "label": "Ordered Word Similarity",
+   "precision": "3"
+  },
+  {
+   "default": "0.21",
+   "description": "Shared words as a fraction of the shorter name, multiplied by shorter/longer. The length penalty is the point: set overlap alone scores a perfect 1.0 whenever one name is a subset of the other, which is misleading.",
+   "fieldname": "weight_word_set",
+   "fieldtype": "Float",
+   "label": "Word Set Similarity x Length Penalty",
+   "precision": "3"
+  },
+  {
+   "fieldname": "column_break_weights",
+   "fieldtype": "Column Break"
+  },
+  {
+   "default": "0.18",
+   "description": "Shared words weighted by how rare they are. Sharing \"nunc\" is strong evidence; sharing \"plate\" is almost none.",
+   "fieldname": "weight_rare",
+   "fieldtype": "Float",
+   "label": "Rare Word Overlap (IDF)",
+   "precision": "3"
+  },
+  {
+   "default": "0.14",
+   "description": "Same manufacturer, after config/makes_alias.json collapses the 1,438 spellings. Abstains when either side is blank - which is 29% of items.",
+   "fieldname": "weight_makes",
+   "fieldtype": "Float",
+   "label": "Makes Agreement",
+   "precision": "3"
+  }
+ ],
+ "index_web_pages_for_search": 0,
+ "issingle": 1,
+ "links": [],
+ "modified": "2026-10-21 00:00:00",
+ "modified_by": "Administrator",
+ "module": "Item Duplicate Check",
+ "name": "Item Duplicate Check Settings",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "email": 1,
+   "print": 1,
+   "read": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "read": 1,
+   "role": "Item Manager"
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": [],
+ "track_changes": 1
+}

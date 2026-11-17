@@ -1,0 +1,105 @@
+{
+  "engine_version": "model-1.0",
+  "features": [
+    "ordered_similarity",
+    "raw_similarity",
+    "set_overlap",
+    "length_ratio",
+    "set_overlap_x_length",
+    "idf_shared_fraction",
+    "shared_token_count",
+    "token_count_min",
+    "token_count_diff",
+    "digit_token_overlap",
+    "first_token_match",
+    "makes_agree",
+    "makes_abstain",
+    "hsn_agree",
+    "hsn_abstain",
+    "department_agree",
+    "department_abstain",
+    "requester_agree",
+    "requester_abstain",
+    "naming_series_differs",
+    "same_category_other_division"
+  ],
+  "trained_on": "site_local",
+  "random_state": 42,
+  "rows_train": 16250,
+  "validation": {
+    "logistic regression": {
+      "roc_auc": 0.9482884340032879,
+      "pr_auc": 0.8925507164325269,
+      "bands": {
+        "0.6": [
+          0.8028776978417266,
+          0.8063583815028902
+        ],
+        "0.75": [
+          0.8959044368600683,
+          0.7586705202312138
+        ],
+        "0.85": [
+          0.9540918163672655,
+          0.6907514450867052
+        ],
+        "0.92": [
+          0.9761904761904762,
+          0.5924855491329479
+        ]
+      }
+    },
+    "gradient boosting": {
+      "roc_auc": 0.9570502514137502,
+      "pr_auc": 0.911422261591525,
+      "bands": {
+        "0.6": [
+          0.9460500963391136,
+          0.7095375722543352
+        ],
+        "0.75": [
+          0.9653767820773931,
+          0.684971098265896
+        ],
+        "0.85": [
+          0.9748427672955975,
+          0.6719653179190751
+        ],
+        "0.92": [
+          0.993421052631579,
+          0.6546242774566474
+        ]
+      }
+    }
+  },
+  "coefficients": {
+    "ordered_similarity": -1.200846696277802,
+    "raw_similarity": 0.278654264489945,
+    "set_overlap": -1.453587552947892,
+    "length_ratio": -0.21728195211942894,
+    "set_overlap_x_length": -0.9334646786574707,
+    "idf_shared_fraction": 4.350753959401283,
+    "shared_token_count": 0.3488279094912908,
+    "token_count_min": -0.838706154546888,
+    "token_count_diff": 0.4833532179199499,
+    "digit_token_overlap": 0.4631895724048716,
+    "first_token_match": 0.14335048099251524,
+    "makes_agree": 0.7757716777639744,
+    "makes_abstain": -0.4183544818080931,
+    "hsn_agree": 0.1891396329491748,
+    "hsn_abstain": 0.1786690808600412,
+    "department_agree": -0.076419430036894,
+    "department_abstain": 0.05710403793654503,
+    "requester_agree": 0.03027794491574492,
+    "requester_abstain": -0.08460701810828686,
+    "naming_series_differs": 0.052889914069848956,
+    "same_category_other_division": 0.07097132111432708
+  },
+  "best_by_pr_auc": "gradient boosting",
+  "clearly_wins_baseline": false,
+  "baseline": {
+    "precision_at_0.92": 1.0,
+    "recall_at_0.92": 0.642,
+    "recall_at_5": 0.855
+  }
+}
